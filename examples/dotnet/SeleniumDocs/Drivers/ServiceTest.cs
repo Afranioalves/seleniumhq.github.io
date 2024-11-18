@@ -1,10 +1,7 @@
-using System;
-using System.IO;
-using System.Linq;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Firefox;
+using SeleniumDocs.TestSupport;
 
 namespace SeleniumDocs.Drivers
 {
@@ -18,12 +15,14 @@ namespace SeleniumDocs.Drivers
             driver = new ChromeDriver(service);
         }
 
-        [TestMethod]
+        [TestMethodCustom]
+        [EnabledOnOs("OSX")]
         public void DriverLocation()
         {
-            var service = ChromeDriverService.CreateDefaultService(GetDriverLocation());
+            var options = GetLatestChromeOptions();
+            var service = ChromeDriverService.CreateDefaultService(GetDriverLocation(options));
 
-            driver = new ChromeDriver(service);
+            driver = new ChromeDriver(service, options);
         }
 
         [TestMethod]
@@ -35,9 +34,17 @@ namespace SeleniumDocs.Drivers
             driver = new ChromeDriver(service);
         }
         
-        private string GetDriverLocation()
+        private static string GetDriverLocation(ChromeOptions options)
         {
-            return DriverFinder.FullPath(new ChromeOptions());
+            return new DriverFinder(options).GetDriverPath();
+        }
+
+        private static ChromeOptions GetLatestChromeOptions()
+        {
+            return new ChromeOptions
+            {
+                BrowserVersion = "stable"
+            };
         }
     }
 }

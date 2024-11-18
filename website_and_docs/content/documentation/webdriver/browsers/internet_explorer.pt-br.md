@@ -27,18 +27,18 @@ Informação adicional sobre como usar o Internet Explorer pode ser encontrada n
 Este é um exemplo de como iniciar o navegador Microsoft Edge em modo compatibilidade Internet Explorer
 usando um conjunto de opções básicas:
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="/examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#38-L41" >}}
 {{< /tab >}}
 {{% tab header="Python" %}}
-{{< gh-codeblock path="/examples/python/tests/browsers/test_internet_explorer.py#L13-L16" >}}
+{{< gh-codeblock path="/examples/python/tests/browsers/test_internet_explorer.py#L11-L14" >}}
 {{% /tab %}}
 {{% tab header="CSharp" %}}
 {{< gh-codeblock path="/examples/dotnet/SeleniumDocs/Browsers/InternetExplorerTest.cs#L35-L38" >}}
 {{% /tab %}}
 {{< tab header="Ruby" >}}
-{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L8-L11" >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L17-L20" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 {{< badge-code >}}
@@ -62,13 +62,13 @@ So, if IE is not on the system, you only need:
 {{< gh-codeblock path="/examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#46-L47" >}}
 {{< /tab >}}
 {{% tab header="Python" text=true %}}
-{{< gh-codeblock path="/examples/python/tests/browsers/test_internet_explorer.py#L23-L24" >}}
+{{< gh-codeblock path="/examples/python/tests/browsers/test_internet_explorer.py#L21-L22" >}}
 {{% /tab %}}
 {{% tab header="CSharp" text=true %}}
 {{< gh-codeblock path="/examples/dotnet/SeleniumDocs/Browsers/InternetExplorerTest.cs#L44-L45" >}}
 {{% /tab %}}
 {{< tab header="Ruby" text=true >}}
-{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L15-L16" >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L24-L25" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 let driver = await new Builder()
@@ -114,10 +114,8 @@ var options = new InternetExplorerOptions();
 options.FileUploadDialogTimeout = TimeSpan.FromMilliseconds(2000);
 var driver = new RemoteWebDriver(options);
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-options = Selenium::WebDriver::IE::Options.new
-options.file_upload_dialog_timeout = 2000
-driver = Selenium::WebDriver.for(:ie, options: options)
+  {{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L29" >}}
   {{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
@@ -169,11 +167,9 @@ var options = new InternetExplorerOptions();
 options.EnsureCleanSession = true;
 var driver = new RemoteWebDriver(options);
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-options = Selenium::WebDriver::IE::Options.new
-options.ensure_clean_session = true
-driver = Selenium::WebDriver.for(:ie, options: options)
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L35" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
 let options = new ie.Options().ensureCleanSession(true);
@@ -219,11 +215,9 @@ var options = new InternetExplorerOptions();
 options.IgnoreZoomLevel = true;
 var driver = new RemoteWebDriver(options);
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-options = Selenium::WebDriver::IE::Options.new
-options.ignore_zoom_level = true
-driver = Selenium::WebDriver.for(:ie, options: options)
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L41" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
 let options = new ie.Options().ignoreZoomSetting(true);
@@ -279,11 +273,9 @@ var options = new InternetExplorerOptions();
 options.IntroduceInstabilityByIgnoringProtectedModeSettings = true;
 var driver = new RemoteWebDriver(options);
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-options = Selenium::WebDriver::IE::Options.new
-options.ignore_protected_mode_settings = true
-driver = Selenium::WebDriver.for(:ie, options: options)
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L47" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
 let options = new ie.Options().introduceFlakinessByIgnoringProtectedModeSettings(true);
@@ -328,9 +320,9 @@ InternetExplorerOptions options = new InternetExplorerOptions();
 options.AddAdditionalInternetExplorerOption("silent", true);
 IWebDriver driver = new InternetExplorerDriver(options);
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-    # Por favor inclua um PR para adicionar uma amostra de código
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L53" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const {Builder,By, Capabilities} = require('selenium-webdriver');
 let caps = Capabilities.ie();
@@ -438,21 +430,9 @@ namespace ieTest {
  }
 }
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-require 'selenium-webdriver'
-options = Selenium::WebDriver::IE::Options.new
-options.force_create_process_api = true
-options.add_argument('-k')
-driver = Selenium::WebDriver.for(:ie, options: options)
-
-begin
-  # Navegar para URL
-  driver.get 'https://google.com'
-  puts(driver.capabilities.to_json)
-ensure
-  driver.quit
-end
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L58" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
 let options = new ie.Options();
@@ -543,20 +523,9 @@ namespace ieTest {
  }
 }
   {{< /tab >}}
-  {{< tab header="Ruby" >}}
-require 'selenium-webdriver'
-options = Selenium::WebDriver::IE::Options.new
-options.force_create_process_api = true
-driver = Selenium::WebDriver.for(:ie, options: options)
-
-begin
-  # Navegar para Url
-  driver.get 'https://google.com'
-  puts(driver.capabilities.to_json)
-ensure
-  driver.quit
-end
-  {{< /tab >}}
+{{< tab header="Ruby" text=true >}}
+{{< gh-codeblock path="/examples/ruby/spec/browsers/internet_explorer_spec.rb#L63" >}}
+{{< /tab >}}
   {{< tab header="JavaScript" >}}
 const ie = require('selenium-webdriver/ie');
 let options = new ie.Options();
@@ -601,7 +570,7 @@ direct where the logs will go. Logging output is ignored unless the user directs
 
 To change the logging output to save to a specific file:
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{% tab header="Java" %}}
 {{< badge-version version="4.10" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#L53" >}}
@@ -610,14 +579,14 @@ Property key: `InternetExplorerDriverService.IE_DRIVER_LOGFILE_PROPERTY`\
 Property value: String representing path to log file
 {{% /tab %}}
 {{< tab header="Python" >}}
-{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L31" >}}
+{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L29" >}}
 {{< /tab >}}
 {{< tab header="CSharp" >}}
 {{< badge-implementation >}}
 {{< /tab >}}
 {{< tab header="Ruby" >}}
 {{< badge-version version="4.10" >}}
-{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L34" >}}
+{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L82" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 {{< badge-code >}}
@@ -631,7 +600,7 @@ Property value: String representing path to log file
 
 To change the logging output to display in the console as STDOUT:
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{% tab header="Java" %}}
 {{< badge-version version="4.10" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#L67" >}}
@@ -641,14 +610,14 @@ Property value: `DriverService.LOG_STDOUT` or `DriverService.LOG_STDERR`
 {{% /tab %}}
 {{< tab header="Python" >}}
 {{< badge-version version="4.11" >}}
-{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L43" >}}
+{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L41" >}}
 {{< /tab >}}
 {{< tab header="CSharp" >}}
 {{< badge-implementation >}}
 {{< /tab >}}
 {{< tab header="Ruby" >}}
 {{< badge-version version="4.10" >}}
-{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L43" >}}
+{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L91" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 {{< badge-code >}}
@@ -662,7 +631,7 @@ Property value: `DriverService.LOG_STDOUT` or `DriverService.LOG_STDERR`
 There are 6 available log levels: `FATAL`, `ERROR`, `WARN`, `INFO`, `DEBUG`, and `TRACE`
 If logging output is specified, the default level is `FATAL`
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{% tab header="Java" %}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#L82" >}}
 **Note**: Java also allows setting log level by System Property:\
@@ -670,14 +639,14 @@ Property key: `InternetExplorerDriverService.IE_DRIVER_LOGLEVEL_PROPERTY`\
 Property value: String representation of `InternetExplorerDriverLogLevel.DEBUG.toString()` enum
 {{% /tab %}}
 {{< tab header="Python" >}}
-{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L55" >}}
+{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L53" >}}
 {{< /tab >}}
 {{< tab header="CSharp" >}}
 {{< gh-codeblock path="examples/dotnet/SeleniumDocs/Browsers/InternetExplorerTest.cs#L85" >}}
 {{< /tab >}}
 {{< tab header="Ruby" >}}
 {{< badge-version version="4.10" >}}
-{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L54" >}}
+{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L102" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 {{< badge-code >}}
@@ -689,7 +658,7 @@ Property value: String representation of `InternetExplorerDriverLogLevel.DEBUG.t
 
 ### Supporting Files Path
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/browsers/InternetExplorerTest.java#L94" >}}
 **Note**: Java also allows setting log level by System Property:\
@@ -698,14 +667,14 @@ Property value: String representing path to supporting files directory
 {{< /tab >}}
 {{< tab header="Python" >}}
 {{< badge-version version="4.11" >}}
-{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L67" >}}
+{{< gh-codeblock path="examples/python/tests/browsers/test_internet_explorer.py#L65" >}}
 {{< /tab >}}
 {{< tab header="CSharp" >}}
 {{< gh-codeblock path="examples/dotnet/SeleniumDocs/Browsers/InternetExplorerTest.cs#L98" >}}
 {{< /tab >}}
 {{< tab header="Ruby" >}}
 {{< badge-version version="4.8" >}}
-{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L64" >}}
+{{< gh-codeblock path="examples/ruby/spec/browsers/internet_explorer_spec.rb#L112" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
 {{< badge-code >}}

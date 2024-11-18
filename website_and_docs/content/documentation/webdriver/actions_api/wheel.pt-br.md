@@ -19,7 +19,7 @@ Este método recebe um elemento da web como único argumento.
 
 Independentemente de o elemento estar acima ou abaixo da tela de visualização atual, a janela de visualização será rolada de forma que a parte inferior do elemento esteja na parte inferior da tela.
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/actions_api/WheelTest.java#L17-L20" >}}
 {{< /tab >}}
@@ -33,7 +33,7 @@ Independentemente de o elemento estar acima ou abaixo da tela de visualização 
 {{< gh-codeblock path="examples/ruby/spec/actions_api/wheel_spec.rb#L11-L14" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
-{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L18-L22" >}}
+{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L16-L19" >}}
 {{< /tab >}}
 {{< tab header="Kotlin" >}}
 {{< gh-codeblock path="examples/kotlin/src/test/kotlin/dev/selenium/actions_api/WheelTest.kt#L18-L21" >}}
@@ -44,7 +44,7 @@ Independentemente de o elemento estar acima ou abaixo da tela de visualização 
 
 Este é o segundo cenário mais comum para a rolagem. Passe um valor delta x e um valor delta y para o quanto rolar nas direções direita e para baixo. Valores negativos representam esquerda e para cima, respectivamente.
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/actions_api/WheelTest.java#L29-L33" >}}
 {{< /tab >}}
@@ -58,7 +58,7 @@ Este é o segundo cenário mais comum para a rolagem. Passe um valor delta x e u
 {{< gh-codeblock path="examples/ruby/spec/actions_api/wheel_spec.rb#L22-L26" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
-{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L30-L35" >}}
+{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L26-L31" >}}
 {{< /tab >}}
 {{< tab header="Kotlin" >}}
 {{< gh-codeblock path="examples/kotlin/src/test/kotlin/dev/selenium/actions_api/WheelTest.kt#L30-L34" >}}
@@ -73,7 +73,7 @@ Para executar isso, use o método "Rolar a Partir de", que recebe 3 argumentos. 
 
 Se o elemento estiver fora da janela de visualização, ele será rolado para a parte inferior da tela e, em seguida, a página será rolada pelos valores delta x e delta y fornecidos.
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/actions_api/WheelTest.java#L42-L46" >}}
 {{< /tab >}}
@@ -87,7 +87,7 @@ Se o elemento estiver fora da janela de visualização, ele será rolado para a 
 {{< gh-codeblock path="examples/ruby/spec/actions_api/wheel_spec.rb#L34-L38" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
-{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L45-L49" >}}
+{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L40-L44" >}}
 {{< /tab >}}
 {{< tab header="Kotlin" >}}
 {{< gh-codeblock path="examples/kotlin/src/test/kotlin/dev/selenium/actions_api/WheelTest.kt#L43-L47" >}}
@@ -104,7 +104,7 @@ Se o elemento estiver fora da janela de visualização, primeiro ele será rolad
 
 Observe que se o deslocamento a partir do centro do elemento estiver fora da janela de visualização, isso resultará em uma exceção.
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/actions_api/WheelTest.java#L57-L61" >}}
 {{< /tab >}}
@@ -118,7 +118,7 @@ Observe que se o deslocamento a partir do centro do elemento estiver fora da jan
 {{< gh-codeblock path="examples/ruby/spec/actions_api/wheel_spec.rb#L48-L52" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
-{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L62-L66" >}}
+{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L57-L61" >}}
 {{< /tab >}}
 {{< tab header="Kotlin" >}}
 {{< gh-codeblock path="examples/kotlin/src/test/kotlin/dev/selenium/actions_api/WheelTest.kt#L59-L63" >}}
@@ -133,7 +133,7 @@ Isso utiliza novamente o método "Rolar a Partir", mas a janela de visualizaçã
 
 Observe que se o deslocamento a partir do canto superior esquerdo da janela de visualização sair da tela, isso resultará em uma exceção.
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{< tab header="Java" >}}
 {{< gh-codeblock path="examples/java/src/test/java/dev/selenium/actions_api/WheelTest.java#L73-L76" >}}
 {{< /tab >}}
@@ -147,7 +147,7 @@ Observe que se o deslocamento a partir do canto superior esquerdo da janela de v
 {{< gh-codeblock path="examples/ruby/spec/actions_api/wheel_spec.rb#L63-L66" >}}
 {{< /tab >}}
 {{< tab header="JavaScript" >}}
-{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L80-L82" >}}
+{{< gh-codeblock path="examples/javascript/test/actionsApi/wheelTest.spec.js#L75-L77" >}}
 {{< /tab >}}
 {{< tab header="Kotlin" >}}
 {{< gh-codeblock path="examples/kotlin/src/test/kotlin/dev/selenium/actions_api/WheelTest.kt#L75-L78" >}}

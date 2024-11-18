@@ -4,7 +4,7 @@ require 'spec_helper'
 
 RSpec.describe 'Chrome' do
   describe 'Options' do
-    let(:chrome_location) { ENV.fetch('CHROME_BIN', nil) }
+    let(:chrome_location) { driver_finder && ENV.fetch('CHROME_BIN', nil) }
 
     it 'basic options' do
       options = Selenium::WebDriver::Options.chrome
@@ -14,7 +14,7 @@ RSpec.describe 'Chrome' do
     it 'add arguments' do
       options = Selenium::WebDriver::Options.chrome
 
-      options.args << '--maximize'
+      options.args << '--start-maximized'
 
       @driver = Selenium::WebDriver.for :chrome, options: options
     end
@@ -28,7 +28,7 @@ RSpec.describe 'Chrome' do
     end
 
     it 'add extensions' do
-      extension_file_path = File.expand_path('../extensions/webextensions-selenium-example.crx', __dir__)
+      extension_file_path = File.expand_path('../spec_support/extensions/webextensions-selenium-example.crx', __dir__)
       options = Selenium::WebDriver::Options.chrome
 
       options.add_extension(extension_file_path)
@@ -50,7 +50,7 @@ RSpec.describe 'Chrome' do
     it 'excludes switches' do
       options = Selenium::WebDriver::Options.chrome
 
-      options.exclude_switches << 'enable-automation'
+      options.exclude_switches << 'disable-popup-blocking'
 
       @driver = Selenium::WebDriver.for :chrome, options: options
     end
@@ -111,5 +111,59 @@ RSpec.describe 'Chrome' do
       warning = /\[WARNING\]: You are using an unsupported command-line switch: --disable-build-check/
       expect(File.readlines(file_name).grep(warning).any?).to eq true
     end
+  end
+
+  describe 'Special Features' do
+    it 'casts' do
+      @driver = Selenium::WebDriver.for :chrome
+      sinks = @driver.cast_sinks
+      unless sinks.empty?
+        device_name = sinks.first['name']
+        @driver.start_cast_tab_mirroring(device_name)
+        expect { @driver.stop_casting(device_name) }.not_to raise_exception
+      end
+    end
+
+    it 'gets and sets network conditions' do
+      @driver = Selenium::WebDriver.for :chrome
+      @driver.network_conditions = {offline: false, latency: 100, throughput: 200}
+      expect(@driver.network_conditions).to eq(
+        'offline' => false,
+        'latency' => 100,
+        'download_throughput' => 200,
+        'upload_throughput' => 200)
+    end
+
+    it 'gets the browser logs' do
+      @driver = Selenium::WebDriver.for :chrome
+      @driver.navigate.to 'https://www.selenium.dev/selenium/web/'
+      sleep 1
+      logs = @driver.logs.get(:browser)
+
+      expect(logs.first.message).to include 'Failed to load resource'
+    end
+
+    it 'sets permissions' do
+      @driver = Selenium::WebDriver.for :chrome
+      @driver.navigate.to 'https://www.selenium.dev/selenium/web/'
+      @driver.add_permission('camera', 'denied')
+      @driver.add_permissions('clipboard-read' => 'denied', 'clipboard-write' => 'prompt')
+      expect(permission('camera')).to eq('denied')
+      expect(permission('clipboard-read')).to eq('denied')
+      expect(permission('clipboard-write')).to eq('prompt')
+    end
+  end
+
+  def driver_finder
+    options = Selenium::WebDriver::Options.chrome(browser_version: 'stable')
+    service = Selenium::WebDriver::Service.chrome
+    finder = Selenium::WebDriver::DriverFinder.new(options, service)
+    ENV['CHROMEDRIVER_BIN'] = finder.driver_path
+    ENV['CHROME_BIN'] = finder.browser_path
+  end
+
+  def permission(name)
+    @driver.execute_async_script('callback = arguments[arguments.length - 1];' \
+                                 'callback(navigator.permissions.query({name: arguments[0]}));', name)['state']
   end
 end

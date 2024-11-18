@@ -16,7 +16,7 @@ aliases: [
 
 ## 请求对应的程序语言
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
   {{% tab header="Java" %}}
 查看该库所支持java的最低版本 [here](https://github.com/SeleniumHQ/selenium/blob/trunk/.bazelrc#L13).
 
@@ -25,7 +25,7 @@ aliases: [
 ### Maven
 具体的依赖位于项目中的 `pom.xml` 文件:
 
-{{< gh-codeblock path="examples/java/pom.xml#L29-L33" >}}
+{{< gh-codeblock path="examples/java/pom.xml#L30-L34" >}}
 
 ### Gradle
 具体的依赖位于项目中的 `build.gradle` 文件中的 `testImplementation`:
@@ -44,6 +44,7 @@ aliases: [
 ```shell
 pip install selenium
 ```
+<br>
 
 ### 下载
 
@@ -53,6 +54,7 @@ pip install selenium
 ```shell
 python setup.py install
 ```
+<br>
 
 ### 在项目中使用
 
@@ -71,12 +73,14 @@ Selenium 所支持的所有平台的列表一览
 ```shell
 Install-Package Selenium.WebDriver
 ```
+<br>
 
 ### .NET CLI
 
 ```shell
 dotnet add package Selenium.WebDriver
 ```
+<br>
 
 ### CSProj
 
@@ -123,6 +127,7 @@ Selenium 可以使用两种不同方法安装.
 ```shell
 gem install selenium-webdriver
 ```
+<br>
 
 ### 加入项目的 gemfile
 
@@ -141,6 +146,7 @@ Selenium is typically installed using npm.
 ```shell
 npm install selenium-webdriver
 ```
+<br>
 
 ### 加入项目
 

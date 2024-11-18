@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openqa.selenium.By;
-import org.openqa.selenium.bidi.LogInspector;
+import org.openqa.selenium.bidi.module.LogInspector;
 import org.openqa.selenium.bidi.log.ConsoleLogEntry;
 import org.openqa.selenium.bidi.log.JavascriptLogEntry;
 import org.openqa.selenium.bidi.log.LogLevel;
@@ -54,7 +54,7 @@ class LogTest extends BaseTest {
             ConsoleLogEntry logEntry = future.get(5, TimeUnit.SECONDS);
 
             Assertions.assertEquals("Hello, world!", logEntry.getText());
-            Assertions.assertNull(logEntry.getRealm());
+
             Assertions.assertEquals(1, logEntry.getArgs().size());
             Assertions.assertEquals("console", logEntry.getType());
             Assertions.assertEquals("log", logEntry.getMethod());

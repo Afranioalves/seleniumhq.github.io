@@ -21,65 +21,66 @@ env:
   GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
 jobs:
-  test_examples:
+  tests:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+        os: [ ubuntu, windows, macos ]
+        release: [ stable, nightly ]
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
     steps:
     - name: Checkout GitHub repo
-      uses: actions/checkout@v3
-    - name: Install Chrome for set binary test
-      uses: browser-actions/setup-chrome@v1
-      with:
-        chrome-version: stable
-      id: setup-chrome
-    - name: Install Edge for set binary test
-      uses: browser-actions/setup-edge@v1
-      with:
-        edge-version: stable
-      id: setup-edge
-    - name: Install Firefox for set binary test
-      if: matrix.os != 'windows-latest'
-      uses: browser-actions/setup-firefox@v1
-      with:
-        firefox-version: latest
-      id: setup-firefox
-    - name: Set ENV Windows
-      if: matrix.os == 'windows-latest'
+      uses: actions/checkout@v4
+    - name: Remove driver directories Windows
+      if: matrix.os == 'windows'
       run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> $env:GITHUB_ENV
-        echo "EDGE_BIN=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" >> $env:GITHUB_ENV
-        echo "FF_BIN=C:\Program Files (x86)\Mozilla Firefox\firefox-browser.exe" >> $env:GITHUB_ENV
-    - name: Set ENV Mac
-      if: matrix.os == 'macos-latest'
+        rm "$env:ChromeWebDriver" -r -v
+        rm "$env:EdgeWebDriver" -r -v
+        rm "$env:GeckoWebDriver" -r -v
+    - name: Remove driver directories Non-Windows
+      if: matrix.os != 'windows'
       run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
-        echo "EDGE_BIN=/Users/runner/hostedtoolcache/msedge/stable/x64/Contents/MacOS/Microsoft Edge" >> "$GITHUB_ENV"
-        echo "FF_BIN=/Users/runner/hostedtoolcache/firefox/latest/x64/Contents/MacOS/firefox" >> "$GITHUB_ENV"
-    - name: Set ENV Linux
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
-        echo "EDGE_BIN=/opt/hostedtoolcache/msedge/stable/x64/msedge" >> "$GITHUB_ENV"
-        echo "FF_BIN=/opt/hostedtoolcache/firefox/latest/x64/firefox" >> "$GITHUB_ENV"
+        sudo rm -rf $CHROMEWEBDRIVER $EDGEWEBDRIVER $GECKOWEBDRIVER
     - name: Start Xvfb
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu'
       run: Xvfb :99 &
     - name: Set up Python
-      uses: actions/setup-python@v4
+      uses: actions/setup-python@v5
       with:
         python-version: 3.8
-    - name: Install dependencies
+    - name: Install dependencies nightly non-Windows
+      if: matrix.release == 'nightly' && matrix.os != 'windows'
+      run: |
+        pip install -r ./scripts/requirements.txt
+        latest_nightly_python=$(python ./scripts/latest-python-nightly-version.py)
+        cd examples/python
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install --index-url https://test.pypi.org/simple/ selenium==$latest_nightly_python --extra-index-url https://pypi.org/simple/ --upgrade --force-reinstall --break-system-packages
+    - name: Install dependencies nightly Windows
+      if: matrix.release == 'nightly' && matrix.os == 'windows'
+      run: |
+        pip install -r ./scripts/requirements.txt
+        $latest_nightly_python = python ./scripts/latest-python-nightly-version.py
+        cd examples/python
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install --index-url https://test.pypi.org/simple/ selenium==$latest_nightly_python --extra-index-url https://pypi.org/simple/ --upgrade --force-reinstall --break-system-packages
+    - name: Install dependencies stable
+      if: matrix.release == 'stable'
       working-directory: ./examples/python
       run: |
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-    - name: Run tests
-      uses: nick-invision/retry@v2.8.3
+    - name: Set up Java
+      uses: actions/setup-java@v4
       with:
-        timeout_minutes: 20
+        distribution: 'temurin'
+        java-version: 11
+    - name: Run tests
+      uses: nick-invision/retry@v3.0.0
+      with:
+        timeout_minutes: 40
         max_attempts: 3
         command: |
           cd examples/python

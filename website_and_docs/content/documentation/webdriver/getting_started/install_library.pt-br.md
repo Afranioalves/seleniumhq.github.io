@@ -17,7 +17,7 @@ O processo de instalação de bibliotecas depende da linguagem que você escolhe
 
 ## Requisitos por linguagem
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
   {{% tab header="Java" %}}
 Veja a mínima versão do Java suportada [aqui](https://github.com/SeleniumHQ/selenium/blob/trunk/.bazelrc#L13).
 
@@ -27,7 +27,7 @@ A instalação da biblioteca Selenium para Java é feita a partir de uma build t
 ### Maven
 Especifique a dependência no `pom.xml` do seu projeto.
 
-{{< gh-codeblock path="examples/java/pom.xml#L29-L33" >}}
+{{< gh-codeblock path="examples/java/pom.xml#L30-L34" >}}
 
 ### Gradle
 Especifique a dependência no `build.gradle` do seu projeto como `testImplementation`:
@@ -46,6 +46,7 @@ Existe muitas formas diferentes de instalar Selenium.
 ```shell
 pip install selenium
 ```
+<br>
 
 ### Download
 
@@ -55,6 +56,7 @@ Como uma alternativa você pode baixar o [código fonte PyPI](https://pypi.org/p
 ```shell
 python setup.py install
 ```
+<br>
 
 ### Exigir em um projeto
 
@@ -73,12 +75,14 @@ Existe algumas opções para instalar o Selenium.
 ```shell
 Install-Package Selenium.WebDriver
 ```
+<br>
 
 ### .NET CLI
 
 ```shell
 dotnet add package Selenium.WebDriver
 ```
+<br>
 
 ### CSProj
 
@@ -127,6 +131,7 @@ O Selenium pode ser instalado de duas formas diferentes.
 ```shell
 gem install selenium-webdriver
 ```
+<br>
 
 ### Adicione para o gemfile do projeto
 
@@ -144,6 +149,7 @@ Selenium é normalmente instalado usando npm.
 ```shell
 npm install selenium-webdriver
 ```
+<br>
 
 ### Adicione ao seu projeto
 

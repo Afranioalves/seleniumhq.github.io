@@ -4,8 +4,6 @@ import subprocess
 
 from selenium import webdriver
 
-CHROME_LOCATION = os.getenv("CHROME_BIN")
-
 
 def test_basic_options():
     options = webdriver.ChromeOptions()
@@ -25,10 +23,10 @@ def test_args():
     driver.quit()
 
 
-def test_set_browser_location():
+def test_set_browser_location(chrome_bin):
     options = webdriver.ChromeOptions()
 
-    options.binary_location = CHROME_LOCATION
+    options.binary_location = chrome_bin
 
     driver = webdriver.Chrome(options=options)
 
@@ -37,9 +35,9 @@ def test_set_browser_location():
 
 def test_add_extension():
     options = webdriver.ChromeOptions()
-    path = os.path.abspath("tests/extensions/webextensions-selenium-example.crx")
+    extension_file_path = os.path.abspath("tests/extensions/webextensions-selenium-example.crx")
 
-    options.add_extension(path)
+    options.add_extension(extension_file_path)
 
     driver = webdriver.Chrome(options=options)
     driver.get("https://www.selenium.dev/selenium/web/blank.html")
@@ -123,3 +121,43 @@ def test_build_checks(capfd):
     assert expected in err
 
     driver.quit()
+
+
+def test_set_network_conditions():
+    driver = webdriver.Chrome()
+
+    network_conditions = {
+        "offline": False,
+        "latency": 20,  # 20 ms of latency
+        "download_throughput": 2000 * 1024 / 8,  # 2000 kbps
+        "upload_throughput": 2000 * 1024 / 8,    # 2000 kbps
+    }
+    driver.set_network_conditions(**network_conditions)
+
+    driver.get("https://www.selenium.dev")
+
+    # check whether the network conditions are set
+    assert driver.get_network_conditions() == network_conditions
+
+    driver.quit()
+
+
+def test_set_permissions():
+    driver = webdriver.Chrome()
+    driver.get('https://www.selenium.dev')
+
+    driver.set_permissions('camera', 'denied')
+
+    assert get_permission_state(driver, 'camera') == 'denied'
+    driver.quit()
+
+
+def get_permission_state(driver, name):
+    """Helper function to query the permission state."""
+    script = """
+    const callback = arguments[arguments.length - 1];
+    navigator.permissions.query({name: arguments[0]}).then(permissionStatus => {
+        callback(permissionStatus.state);
+    });
+    """
+    return driver.execute_async_script(script, name)

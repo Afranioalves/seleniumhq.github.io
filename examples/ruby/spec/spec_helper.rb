@@ -15,12 +15,6 @@ RSpec.configure do |config|
   end
 
   config.before do |example|
-    unless ENV.fetch('CHROMEWEBDRIVER', nil)
-      chromedriver = Selenium::WebDriver::DriverFinder.path(Selenium::WebDriver::Options.chrome,
-                                                            Selenium::WebDriver::Chrome::Service)
-      ENV['CHROMEWEBDRIVER'] = File.dirname chromedriver
-    end
-
     bug_tracker = 'https://gigithub.com/SeleniumHQ/seleniumhq.github.io/issues'
     guards = Selenium::WebDriver::Support::Guards.new(example,
                                                       bug_tracker: bug_tracker)
@@ -34,23 +28,18 @@ RSpec.configure do |config|
   config.after { @driver&.quit }
 
   def start_session
-    @driver = Selenium::WebDriver.for :chrome
+    options = Selenium::WebDriver::Chrome::Options.new
+    options.add_argument('disable-search-engine-choice-screen')
+    @driver = Selenium::WebDriver.for(:chrome, options: options)
+  end
+
+  def start_bidi_session
+    options = Selenium::WebDriver::Chrome::Options.new(web_socket_url: true)
+    @driver = Selenium::WebDriver.for :chrome, options: options
   end
 
   def start_firefox
     options = Selenium::WebDriver::Options.firefox(timeouts: {implicit: 1500})
     @driver = Selenium::WebDriver.for :firefox, options: options
-  end
-
-  # This can be removed with Selenium 4.14
-  module Selenium
-    module WebDriver
-      module Atoms
-        def atom_script(function_name)
-          format("/* #{function_name} */return (%<atom>s).apply(null, arguments)",
-                 atom: read_atom(function_name))
-        end
-      end
-    end
   end
 end

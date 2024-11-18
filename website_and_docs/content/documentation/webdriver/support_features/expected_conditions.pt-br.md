@@ -17,7 +17,7 @@ Esses métodos podem incluir condições como:
 * título contém o valor especificado
 
 
-{{< tabpane text=true langEqualsHeader=true >}}
+{{< tabpane text=true >}}
 {{% tab header="Java" %}}
 [Expected Conditions Documentation](https://www.selenium.dev/selenium/docs/api/java/org/openqa/selenium/support/ui/ExpectedConditions.html)
 {{< badge-code >}}

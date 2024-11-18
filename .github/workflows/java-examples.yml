@@ -21,62 +21,74 @@ env:
   GH_TOKEN: ${{ secrets.SELENIUM_CI_TOKEN }}
 
 jobs:
-  test_examples:
+  tests:
     strategy:
       fail-fast: false
       matrix:
-        os: [ ubuntu-latest, windows-latest, macos-latest ]
-    runs-on: ${{ matrix.os }}
+        os: [ ubuntu, windows, macos ]
+        release: [ stable, nightly ]
+    runs-on: ${{ format('{0}-latest', matrix.os) }}
     steps:
     - name: Checkout GitHub repo
-      uses: actions/checkout@v3
-    - name: Install Chrome for set binary test
-      uses: browser-actions/setup-chrome@v1
-      with:
-        chrome-version: stable
-      id: setup-chrome
-    - name: Install Edge for set binary test
-      uses: browser-actions/setup-edge@v1
-      with:
-        edge-version: stable
-      id: setup-edge
-    - name: Install Firefox for set binary test
-      if: matrix.os != 'windows-latest'
-      uses: browser-actions/setup-firefox@v1
-      with:
-        firefox-version: latest
-      id: setup-firefox
-    - name: Set ENV Windows
-      if: matrix.os == 'windows-latest'
+      uses: actions/checkout@v4
+    - name: Remove driver directories Windows
+      if: matrix.os == 'windows'
       run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> $env:GITHUB_ENV
-        echo "EDGE_BIN=C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe" >> $env:GITHUB_ENV
-        echo "FF_BIN=C:\Program Files (x86)\Mozilla Firefox\firefox-browser.exe" >> $env:GITHUB_ENV
-    - name: Set ENV Mac
-      if: matrix.os == 'macos-latest'
+        rm "$env:ChromeWebDriver" -r -v
+        rm "$env:EdgeWebDriver" -r -v
+        rm "$env:GeckoWebDriver" -r -v
+    - name: Remove driver directories Non-Windows
+      if: matrix.os != 'windows'
       run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
-        echo "EDGE_BIN=/Users/runner/hostedtoolcache/msedge/stable/x64/Contents/MacOS/Microsoft Edge" >> "$GITHUB_ENV"
-        echo "FF_BIN=/Users/runner/hostedtoolcache/firefox/latest/x64/Contents/MacOS/firefox" >> "$GITHUB_ENV"
-    - name: Set ENV Linux
-      if: matrix.os == 'ubuntu-latest'
-      run: |
-        echo "CHROME_BIN=${{ steps.setup-chrome.outputs.chrome-path }}" >> "$GITHUB_ENV"
-        echo "EDGE_BIN=/opt/hostedtoolcache/msedge/stable/x64/msedge" >> "$GITHUB_ENV"
-        echo "FF_BIN=/opt/hostedtoolcache/firefox/latest/x64/firefox" >> "$GITHUB_ENV"
+        sudo rm -rf $CHROMEWEBDRIVER $EDGEWEBDRIVER $GECKOWEBDRIVER
     - name: Start Xvfb
-      if: matrix.os == 'ubuntu-latest'
+      if: matrix.os == 'ubuntu'
       run: Xvfb :99 &
     - name: Set up Java
-      uses: actions/setup-java@v3
+      id: java
+      uses: actions/setup-java@v4
       with:
         distribution: 'temurin'
-        java-version: 11
-    - name: Run Tests
-      uses: nick-invision/retry@v2.8.3
+        java-version: 17
+    - name: Import test cert non-Windows
+      if: matrix.os != 'windows'
+      run: sudo keytool -import -noprompt -trustcacerts -alias SeleniumHQ -file examples/java/src/test/resources/tls.crt -keystore ${{ steps.java.outputs.path }}/lib/security/cacerts -storepass changeit
+    - name: Import test cert Windows
+      if: matrix.os == 'windows'
+      run: keytool -import -noprompt -trustcacerts -alias SeleniumHQ -file examples/java/src/test/resources/tls.crt -keystore ${{ steps.java.outputs.path }}/lib/security/cacerts -storepass changeit
+    - name: Run Tests Stable
+      if: matrix.release == 'stable'
+      uses: nick-invision/retry@v3.0.0
       with:
-        timeout_minutes: 20
+        timeout_minutes: 40
         max_attempts: 3
         command: |
           cd examples/java
-          mvn -B test
+          mvn -B test -D"jdk.internal.httpclient.disableHostnameVerification=true"
+    - name: Run Tests Nightly Linux/macOS
+      if: matrix.release == 'nightly' && matrix.os != 'windows'
+      uses: nick-invision/retry@v3.0.0
+      with:
+        timeout_minutes: 40
+        max_attempts: 3
+        command: |
+          pip install yq
+          xml_content=$(curl -sf https://oss.sonatype.org/service/local/repositories/snapshots/content/org/seleniumhq/selenium/selenium-java/)
+          latest_snapshot=$(echo "$xml_content" | xq '.content.data."content-item"' | jq -r 'sort_by(.lastModified) | last | .text')
+          echo "Latest Selenium Snapshot: $latest_snapshot"
+          cd examples/java
+          mvn -B -U test -D"jdk.internal.httpclient.disableHostnameVerification=true"
+
+    - name: Run Tests Nightly Windows
+      if: matrix.release == 'nightly' && matrix.os == 'windows'
+      uses: nick-invision/retry@v3.0.0
+      with:
+        timeout_minutes: 40
+        max_attempts: 3
+        command: |
+          pip install yq          
+          $xml_content = Invoke-WebRequest -Uri "https://oss.sonatype.org/service/local/repositories/snapshots/content/org/seleniumhq/selenium/selenium-java/"
+          $latest_snapshot = $xml_content.Content | xq '.content.data.\"content-item\"' | jq -r 'sort_by(.lastModified) | last | .text'
+          Write-Output "Latest Selenium Snapshot: $latest_snapshot"
+          cd examples/java
+          mvn -B -U test -D"jdk.internal.httpclient.disableHostnameVerification=true"

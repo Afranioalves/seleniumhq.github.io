@@ -2,10 +2,7 @@ import os
 import re
 import subprocess
 
-import pytest
 from selenium import webdriver
-
-EDGE_LOCATION = os.getenv("EDGE_BIN")
 
 
 def test_basic_options():
@@ -26,10 +23,10 @@ def test_args():
     driver.quit()
 
 
-def test_set_browser_location():
+def test_set_browser_location(edge_bin):
     options = webdriver.EdgeOptions()
 
-    options.binary_location = EDGE_LOCATION
+    options.binary_location = edge_bin
 
     driver = webdriver.Edge(options=options)
 
@@ -38,9 +35,9 @@ def test_set_browser_location():
 
 def test_add_extension():
     options = webdriver.EdgeOptions()
-    path = os.path.abspath("tests/extensions/webextensions-selenium-example.crx")
+    extension_file_path = os.path.abspath("tests/extensions/webextensions-selenium-example.crx")
 
-    options.add_extension(path)
+    options.add_extension(extension_file_path)
 
     driver = webdriver.Edge(options=options)
     driver.get("https://www.selenium.dev/selenium/web/blank.html")
@@ -50,6 +47,7 @@ def test_add_extension():
 
 def test_keep_browser_open():
     options = webdriver.EdgeOptions()
+
     options.add_experimental_option("detach", True)
 
     driver = webdriver.Edge(options=options)
@@ -60,6 +58,7 @@ def test_keep_browser_open():
 
 def test_exclude_switches():
     options = webdriver.EdgeOptions()
+
     options.add_experimental_option('excludeSwitches', ['disable-popup-blocking'])
 
     driver = webdriver.Edge(options=options)
@@ -79,7 +78,6 @@ def test_log_to_file(log_path):
     driver.quit()
 
 
-@pytest.mark.skip(reason="this is not supported, yet")
 def test_log_to_stdout(capfd):
     service = webdriver.EdgeService(log_output=subprocess.STDOUT)
 
@@ -108,7 +106,7 @@ def test_log_features(log_path):
     driver = webdriver.Edge(service=service)
 
     with open(log_path, 'r') as f:
-        assert re.match("\[\d\d-\d\d-\d\d\d\d", f.read())
+        assert re.match(r"\[\d\d-\d\d-\d\d\d\d", f.read())
 
     driver.quit()
 
@@ -124,3 +122,42 @@ def test_build_checks(log_path):
 
     driver.quit()
 
+
+def test_set_network_conditions():
+    driver = webdriver.Edge()
+
+    network_conditions = {
+        "offline": False,
+        "latency": 20,  # 20 ms of latency
+        "download_throughput": 2000 * 1024 / 8,  # 2000 kbps
+        "upload_throughput": 2000 * 1024 / 8,    # 2000 kbps
+    }
+    driver.set_network_conditions(**network_conditions)
+
+    driver.get("https://www.selenium.dev")
+
+    # check whether the network conditions are set
+    assert driver.get_network_conditions() == network_conditions
+
+    driver.quit()
+
+
+def test_set_permissions():
+    driver = webdriver.Edge()
+    driver.get('https://www.selenium.dev')
+
+    driver.set_permissions('camera', 'denied')
+
+    assert get_permission_state(driver, 'camera') == 'denied'
+    driver.quit()
+
+
+def get_permission_state(driver, name):
+    """Helper function to query the permission state."""
+    script = """
+    const callback = arguments[arguments.length - 1];
+    navigator.permissions.query({name: arguments[0]}).then(permissionStatus => {
+        callback(permissionStatus.state);
+    });
+    """
+    return driver.execute_async_script(script, name)

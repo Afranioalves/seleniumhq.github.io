@@ -171,9 +171,13 @@ namespace SeleniumDocs.Browsers
             return _logLocation;
         }
 
-        private string GetChromeLocation()
+        private static string GetChromeLocation()
         {
-            return Environment.GetEnvironmentVariable("CHROME_BIN");
+            var options = new ChromeOptions
+            {
+                BrowserVersion = "stable"
+            };
+            return new DriverFinder(options).GetBrowserPath();
         }
     }
 }
